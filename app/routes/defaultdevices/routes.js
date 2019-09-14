@@ -5,7 +5,7 @@ const router = express.Router()
 router.post('/', (req, res) => {
     services.addDevice(req, res)
 })
-router.get('/', (req, res) => {
+router.get('/find', (req, res) => {
     services.findDevice(req, res)
 })
 

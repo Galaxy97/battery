@@ -1,6 +1,9 @@
-const defaultDevices = require('./models/modelServices')
+const defaultDevices = require('./models/modelServices').defaultDevices
+const userDevices = require('./models/modelServices').userDevices
+// const moment = require('moment')
+// moment().format()
 
-const addDevice = (req, res) => {
+const addNewDevice = (req, res) => {
   new defaultDevices({
     devices: req.body.devices,
     entety: req.body.entety,
@@ -17,6 +20,31 @@ const addDevice = (req, res) => {
     .catch((err) => {
       return next(new RequestError(400, err))
     })
+}
+const addDevice = (req, res, serverTime) => {
+  defaultDevices.findById(req.body.id, (err, data) => {
+    if (err) {
+      res.status(404).json(err.message)
+    } else {
+      new userDevices({
+        breand: data.breand,
+        model: data.model,
+        icon: data.icon,
+        chargin: data.chargin,
+        dischargin: data.dischargin,
+        status: 'discharged',
+        battery: 100,
+        timeDischargin:serverTime + data.dischargin,
+        timeChargin: null
+      }).save()
+        .then(() => {
+          res.status(200).send('Successfully added')
+        })
+        .catch((err) => {
+          throw err
+        })
+    }
+  })
 }
 
 const findDevice = (req, res) => {
@@ -50,6 +78,7 @@ const findDevice = (req, res) => {
 }
 
 module.exports = {
+  addNewDevice,
   addDevice,
   findDevice
 }

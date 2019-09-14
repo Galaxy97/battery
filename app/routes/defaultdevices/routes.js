@@ -1,12 +1,21 @@
 const express = require('express')
-const services = require('./sevices')
+const services = {
+    default: require('./sevices'),
+    dashboard: require('../dashboard/services')
+}
 const router = express.Router()
 
 router.post('/', (req, res) => {
-    services.addDevice(req, res)
+    services.default.addNewDevice(req, res)
 })
+
 router.get('/find', (req, res) => {
-    services.findDevice(req, res)
+    services.default.findDevice(req, res)
+})
+
+router.post('/device', (req, res) => {
+    const serverTime = services.dashboard.getServerTime()
+    services.default.addDevice(req, res, serverTime)
 })
 
 module.exports = router

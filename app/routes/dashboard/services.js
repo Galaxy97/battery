@@ -46,11 +46,23 @@ const performer = (serverTime) => {
         if (element.status === 'discharged') {
           if (element.timeDischargin === serverTime) {
             element.status = 'need chargin'
-            // req to user messanger
-            eventCharge(element.breand + element.model, element._id)
+            element.battery = 0
+            eventCharge(element.breand + ' ' + element.model, element.id)
             console.log('user message chargin')
-            userDevices.updateOne({ _id: element._id },
-              { status: element.status })
+            userDevices.updateOne({ _id: element.id },
+              {
+                status: element.status,
+                battery: element.battery
+              })
+              .catch((e) => {
+                console.error(e)
+              })
+          } else {
+            element.battery = ((element.timeDischargin - serverTime) / element.dischargin) * 100
+            userDevices.updateOne({ _id: element.id },
+              {
+                battery: element.battery
+              })
               .catch((e) => {
                 console.error(e)
               })
@@ -59,10 +71,23 @@ const performer = (serverTime) => {
           if (element.timeChargin === serverTime) {
             element.status = 'need stop chargin'
             // req to user messanger
-            eventDisCharge(element.breand + element.model, element._id)
+            element.battery = 100
+            eventDisCharge(element.breand + ' ' + element.model, element.id)
             console.log('user message chargin')
-            userDevices.updateOne({ _id: element._id },
-              { status: element.status })
+            userDevices.updateOne({ _id: element.id },
+              {
+                status: element.status,
+                battery: element.battery
+              })
+              .catch((e) => {
+                console.error(e)
+              })
+          } else {
+            element.battery = (1 - ((element.timeChargin - serverTime) / element.chargin)) * 100
+            userDevices.updateOne({ _id: element.id },
+              {
+                battery: element.battery
+              })
               .catch((e) => {
                 console.error(e)
               })
@@ -122,13 +147,13 @@ bot.on('callback_query', function (msg) {
       }
     })
   } else if (msg.data.slice(0, 2) === 'of') {
-    const _id = msg.data.slice(2)
+    const id = msg.data.slice(2)
     const serverTime = getServerTime()
     userDevices.findOne({ _id: id }, function (err, data) {
       if (err) {
         console.error(err)
       } else {
-        timeDischargin = serverTime + data.chargin
+        timeDischargin = serverTime + data.dischargin
         timeChargin = null
         const status = 'discharged'
         userDevices.updateOne({

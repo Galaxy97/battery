@@ -6,7 +6,7 @@ const serverTimer = () => {
     let serverTime = services.getServerTime()
     services.performer(serverTime)
     console.log(serverTime)    
-    serverTime += 0.5
+    serverTime += 0.25
     services.setServerTime(serverTime)
   })
 }

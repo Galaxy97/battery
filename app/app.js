@@ -7,17 +7,20 @@ const defaultdevices = require('./routes/defaultdevices/routes')
 const dashboard = require('./routes/dashboard/routes')
 const utils = require('./utils/index')
 const images = require('./routes/images/routes')
+const cors = require('cors')
 
 app.use(bodyParser.json())
 app.use(bodyParser.text())
 app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use(cors())
 
 app.use('/', demo)
 app.use('/defaultdevices', defaultdevices)
 app.use('/dashboard', dashboard)
 app.use('/images', images)
 
-// utils.serverTimer()
+utils.serverTimer()
 
 console.log(`
 ***********************************************

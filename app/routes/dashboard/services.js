@@ -58,7 +58,7 @@ const performer = (serverTime) => {
                 console.error(e)
               })
           } else {
-            element.battery = Math.round((element.timeDischargin - serverTime) / element.dischargin) * 100
+            element.battery = Math.round((element.timeDischargin - serverTime) / element.dischargin * 100)
             userDevices.updateOne({ _id: element.id },
               {
                 battery: element.battery
@@ -82,7 +82,8 @@ const performer = (serverTime) => {
                 console.error(e)
               })
           } else {
-            element.battery = Math.round(1 - ((element.timeChargin - serverTime) / element.chargin)) * 100
+            // element.battery = Math.round((1 - ((element.timeChargin - serverTime) / element.chargin)) * 100)
+            element.battery = 100 - ((element.timeChargin - serverTime) / element.chargin) * 100
             userDevices.updateOne({ _id: element.id },
               {
                 battery: element.battery

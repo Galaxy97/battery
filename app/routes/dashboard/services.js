@@ -58,7 +58,7 @@ const performer = (serverTime) => {
                 console.error(e)
               })
           } else {
-            element.battery = ((element.timeDischargin - serverTime) / element.dischargin) * 100
+            element.battery = Math.round((element.timeDischargin - serverTime) / element.dischargin) * 100
             userDevices.updateOne({ _id: element.id },
               {
                 battery: element.battery
@@ -70,7 +70,6 @@ const performer = (serverTime) => {
         } else if (element.status === 'charged') {
           if (element.timeChargin === serverTime) {
             element.status = 'need stop chargin'
-            // req to user messanger
             element.battery = 100
             eventDisCharge(element.breand + ' ' + element.model, element.id)
             console.log('user message chargin')
@@ -83,7 +82,7 @@ const performer = (serverTime) => {
                 console.error(e)
               })
           } else {
-            element.battery = (1 - ((element.timeChargin - serverTime) / element.chargin)) * 100
+            element.battery = Math.round(1 - ((element.timeChargin - serverTime) / element.chargin)) * 100
             userDevices.updateOne({ _id: element.id },
               {
                 battery: element.battery
@@ -110,6 +109,12 @@ const eventCharge = (name, id) => {
       ]
     })
   }
+
+  // bot.sendPhoto({
+  //   chat_id: userid,
+  //   caption: 'This is my test image',
+  //   photo: 'https://image.freepik.com/free-vector/fast-charging-logo-template-with-thunder-symbol_7649-113.jpg'
+  // })
   bot.sendMessage(userid, `To be careful!!! Your device ${name} is low power`, options)
 }
 const eventDisCharge = (name, id) => {

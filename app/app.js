@@ -17,7 +17,7 @@ app.use('/defaultdevices', defaultdevices)
 app.use('/dashboard', dashboard)
 app.use('/images', images)
 
-utils.serverTimer()
+// utils.serverTimer()
 
 console.log(`
 ***********************************************
